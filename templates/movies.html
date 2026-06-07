@@ -1,5 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Welcome to MoviWeb App</h2>
+<h1>Movies for {{ user.name }}</h1>
+
+<h2>Add Movie</h2>
+
+<form method="POST" action="{{ url_for('user_movies', user_id=user.id) }}">
+    <input type="text" name="name" placeholder="Movie title" required>
+    <input type="text" name="director" placeholder="Director">
+    <input type="number" name="year" placeholder="Year">
+    <input type="text" name="poster_url" placeholder="Poster URL">
+    <button type="submit">Add Movie</button>
+</form>
+
+<h2>Favorite Movies</h2>
+
+<ul>
+    {% for movie in movies %}
+        <li>
+            <strong>{{ movie.name }}</strong>
+            {% if movie.director %} - {{ movie.director }}{% endif %}
+            {% if movie.year %} ({{ movie.year }}){% endif %}
+
+            {% if movie.poster_url %}
+                <br>
+                <img src="{{ movie.poster_url }}" alt="{{ movie.name }}" width="100">
+            {% endif %}
+
+            <form method="POST"
+                  action="{{ url_for('update_movie', user_id=user.id, movie_id=movie.id) }}">
+                <input type="text" name="name" placeholder="New title">
+                <button type="submit">Update</button>
+            </form>
+
+            <form method="POST"
+                  action="{{ url_for('delete_movie', user_id=user.id, movie_id=movie.id) }}">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('index') }}">Back to users</a>
 {% endblock %}
